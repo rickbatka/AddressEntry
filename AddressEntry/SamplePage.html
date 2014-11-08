@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Sample page</title>
+
+    <link href="jquery-ui/jquery-ui.css" rel="stylesheet">
+    <script src="jquery-ui/external/jquery/jquery.js"></script>
+    <script src="jquery-ui/jquery-ui.js"></script>
+    
+    <style type="text/css">
+        input[name=street1]{
+            height:20px;
+            width:300px;
+        }
+    </style>
+    <script type="text/javascript" >
+        $.widget("CCI.addressentry", $.ui.autocomplete, {
+            _create: function () {
+                this._super();
+                
+                // wire up new event handlers
+                this._on(this.element, { addressentryselect: "_handleSelect" });
+                this._on(this.element, { addressentryresponse: "_handleResponse" });
+
+                // make categories non-selectable options in menu
+                this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                
+                // create search labels for source addresses
+                for (var i in this.options.source) {
+                    this.options.source[i].label = this._combineAddress(this.options.source[i]);
+                }
+            },
+            _combineAddress: function (address, withBreaks) {
+                var combined = address.street1;
+                if(address.street2){
+                    combined += ' ' + address.street2;
+                }
+
+                if (withBreaks) {
+                    combined += '<br />';
+                } else {
+                    combined += ' ';
+                }
+
+                combined += address.city + ', ' + address.state + ' ' + address.zip;
+                return combined;
+            },
+
+            _renderMenu: function (ul, items) {
+                //add categories in menu
+                var that = this,
+                  currentCategory = "";
+                $.each(items, function (index, item) {
+                    var li;
+                    if (item.category != currentCategory) {
+                        ul.append("<li class='ui-autocomplete-category'>" + item.category + "</li>");
+                        currentCategory = item.category;
+                    }
+                    li = that._renderItemData(ul, item);
+                    if (item.category) {
+                        li.attr("aria-label", item.category + " : " + item.label);
+                    }
+                });
+            },
+           
+            _handleSelect: function (event, ui) {
+                var selectedAddress = ui.item;
+                this._setField(this.options.street1Field, selectedAddress.street1);
+                this._setField(this.options.street2Field, selectedAddress.street2);
+                this._setField(this.options.cityField, selectedAddress.city);
+                this._setField(this.options.stateField, selectedAddress.state);
+                this._setField(this.options.zipField, selectedAddress.zip);
+
+                this._summarize(selectedAddress);
+
+                return false;
+            },
+
+            _setField: function(ele, val){
+                if (ele) {
+                    if (val) {
+                        $(ele).val(val);
+                    } else {
+                        $(ele).val('');
+                    }
+                }
+            },
+
+            _summarize: function (selectedAddress) {
+                this.element.before('<span class="address-entry-summary">' + this._combineAddress(selectedAddress, true) + '</span>');
+
+                $(this.options.street1Field).hide();
+                $(this.options.street2Field).hide();
+                $(this.options.cityField).hide();
+                $(this.options.stateField).hide();
+                $(this.options.zipField).hide();
+            },
+
+            _handleResponse: function (event, ui) {
+                if(ui.content.length == 0){
+                    
+                }
+            }
+        });
+    </script>
+
+<script type="text/javascript" id="pageScripts">
+    var addresses = [
+    {
+        id: 1,
+        street1: '2106 SE Main St.',
+        street2: 'Apt. 1',
+        city: 'Portland',
+        state: 'OR',
+        zip: '97214',
+        category: 'Shipping'
+    },
+    {
+        id: 3,
+        street1: '116 Hidden Valley Ln.',
+        city: 'Bluemont',
+        state: 'VA',
+        zip: '20135',
+        category: 'Shipping'
+    },
+    {
+        id: 2,
+        street1: '2407 SE 10th Ave.',
+        street2: 'C/O Fumi',
+        city: 'Portland',
+        state: 'OR',
+        zip: '97210',
+        category: 'Billing'
+    }];
+
+    $(document).ready(function () {
+        $('input[name=street1]').addressentry({
+            delay: 0,
+            source: addresses,
+            street1Field: $('input[name=street1]'),
+            street2Field: $('input[name=street2]'),
+            cityField: $('input[name=city]'),
+            stateField: $('input[name=state]'),
+            zipField: $('input[name=zip]'),
+        });
+    });
+</script>
+</head>
+<body>
+    <h1>Choose a shipping address:</h1>
+
+    <form name="shippingAddress">
+        <input type="text" name="street1" placeholder="Start typing address..." />
+        <input type="text" name="street2" />
+        <br />
+        <input type="text" name="city" />
+        <input type="text" name="state" />
+        <input type="text" name="zip" />
+    </form>
+</body>
+</html>
