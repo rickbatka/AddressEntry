@@ -17,10 +17,17 @@
         $.widget("CCI.addressentry", $.ui.autocomplete, {
             _create: function () {
                 this._super();
-                
+
+                //set up UI
+                this.summarySpan = $('<span class="address-entry-summary"></span>').hide();
+                this.resetLink = $('<a href="#">Reset</a>').hide();
+                this.element.before(this.summarySpan);
+                this.summarySpan.after(this.resetLink);
+
                 // wire up new event handlers
                 this._on(this.element, { addressentryselect: "_handleSelect" });
                 this._on(this.element, { addressentryresponse: "_handleResponse" });
+                this._on(this.resetLink, { click: "_resetClick" });
 
                 // make categories non-selectable options in menu
                 this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
@@ -65,11 +72,11 @@
            
             _handleSelect: function (event, ui) {
                 var selectedAddress = ui.item;
-                this._setField(this.options.street1Field, selectedAddress.street1);
-                this._setField(this.options.street2Field, selectedAddress.street2);
-                this._setField(this.options.cityField, selectedAddress.city);
-                this._setField(this.options.stateField, selectedAddress.state);
-                this._setField(this.options.zipField, selectedAddress.zip);
+                this._setField(this.options.fields.street1, selectedAddress.street1);
+                this._setField(this.options.fields.street2, selectedAddress.street2);
+                this._setField(this.options.fields.city, selectedAddress.city);
+                this._setField(this.options.fields.state, selectedAddress.state);
+                this._setField(this.options.fields.zip, selectedAddress.zip);
 
                 this._summarize(selectedAddress);
 
@@ -86,14 +93,40 @@
                 }
             },
 
-            _summarize: function (selectedAddress) {
-                this.element.before('<span class="address-entry-summary">' + this._combineAddress(selectedAddress, true) + '</span>');
+            _resetClick: function () {
+                this._resetAllFields();
+                this._toggleAllFieldsVisibility(true);
+                this._unsummarize();
+                $(this.options.street1Field).focus();
+            },
 
-                $(this.options.street1Field).hide();
-                $(this.options.street2Field).hide();
-                $(this.options.cityField).hide();
-                $(this.options.stateField).hide();
-                $(this.options.zipField).hide();
+            _summarize: function (selectedAddress) {
+                $(this.summarySpan).html(this._combineAddress(selectedAddress, true));
+                $(this.summarySpan).show();
+                $(this.resetLink).show();
+                this._toggleAllFieldsVisibility(false);
+            },
+
+            _unsummarize: function () {
+                $(this.summarySpan).html('');
+                $(this.summarySpan).hide();
+                $(this.resetLink).hide();
+            },
+
+            _resetAllFields: function () {
+                for (var i in this.options.fields){
+                    this._setField(this.options.fields[i], '');
+                }
+            },
+
+            _toggleAllFieldsVisibility: function (visible) {
+                for (var i in this.options.fields) {
+                    if (visible) {
+                        $(this.options.fields[i]).show();
+                    } else {
+                        $(this.options.fields[i]).hide();
+                    }
+                }
             },
 
             _handleResponse: function (event, ui) {
@@ -137,11 +170,13 @@
         $('input[name=street1]').addressentry({
             delay: 0,
             source: addresses,
-            street1Field: $('input[name=street1]'),
-            street2Field: $('input[name=street2]'),
-            cityField: $('input[name=city]'),
-            stateField: $('input[name=state]'),
-            zipField: $('input[name=zip]'),
+            fields: {
+                street1: $('input[name=street1]'),
+                street2: $('input[name=street2]'),
+                city: $('input[name=city]'),
+                state: $('input[name=state]'),
+                zip: $('input[name=zip]'),
+            }
         });
     });
 </script>
