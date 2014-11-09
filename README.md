@@ -1,6 +1,8 @@
 #AddressEntry
 
-AddressEntry is an extension of the jQuery UI autocomplete widget for collecting addresses from existing customers. It will help your existing customers choose from a list of addresses on file and will quickly get out of the way when the user begins typing an address that it doesn't recognize, only exposing the "new address" UI when needed.
+AddressEntry is an extension of the jQuery UI autocomplete widget aimed at helping in collecting addresses from existing customers, for example at the "Choose shipping address" stage of checkout. It will help your existing customers choose from a list of addresses on file and quickly get out of the way when the user begins typing an address that it doesn't recognize, only exposing the "new address" UI when needed.
+
+*Author: Rick Batka, idea Gabriel Harris*
 
 ##Usage
 
