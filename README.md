@@ -4,6 +4,8 @@ AddressEntry is an extension of the jQuery UI autocomplete widget for collecting
 
 ##Usage
 
+(try it out right now on CodePen: http://codepen.io/anon/pen/gbYGKX)
+
 ```js
 $('input[name=street1]').addressentry({
     delay: 0,
