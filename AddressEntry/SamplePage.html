@@ -6,191 +6,65 @@
     <link href="jquery-ui/jquery-ui.css" rel="stylesheet">
     <script src="jquery-ui/external/jquery/jquery.js"></script>
     <script src="jquery-ui/jquery-ui.js"></script>
-    
-    <style type="text/css">
-        input[name=street1]{
-            height:20px;
-            width:300px;
-        }
-    </style>
-    <script type="text/javascript" >
-        $.widget("CCI.addressentry", $.ui.autocomplete, {
-            _create: function () {
-                this._super();
+    <script src="CCI.AddressEntry.js"></script>
 
-                //set up UI
-                this.summarySpan = $('<span class="address-entry-summary"></span>').hide();
-                this.resetLink = $('<a href="#">Reset</a>').hide();
-                this.element.before(this.summarySpan);
-                this.summarySpan.after(this.resetLink);
-
-                // wire up new event handlers
-                this._on(this.element, { addressentryselect: "_handleSelect" });
-                this._on(this.element, { addressentryresponse: "_handleResponse" });
-                this._on(this.resetLink, { click: "_resetClick" });
-
-                // make categories non-selectable options in menu
-                this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                
-                // create search labels for source addresses
-                for (var i in this.options.source) {
-                    this.options.source[i].label = this._combineAddress(this.options.source[i]);
-                }
-            },
-            _combineAddress: function (address, withBreaks) {
-                var combined = address.street1;
-                if(address.street2){
-                    combined += ' ' + address.street2;
-                }
-
-                if (withBreaks) {
-                    combined += '<br />';
-                } else {
-                    combined += ' ';
-                }
-
-                combined += address.city + ', ' + address.state + ' ' + address.zip;
-                return combined;
-            },
-
-            _renderMenu: function (ul, items) {
-                //add categories in menu
-                var that = this,
-                  currentCategory = "";
-                $.each(items, function (index, item) {
-                    var li;
-                    if (item.category != currentCategory) {
-                        ul.append("<li class='ui-autocomplete-category'>" + item.category + "</li>");
-                        currentCategory = item.category;
-                    }
-                    li = that._renderItemData(ul, item);
-                    if (item.category) {
-                        li.attr("aria-label", item.category + " : " + item.label);
-                    }
-                });
-            },
-           
-            _handleSelect: function (event, ui) {
-                var selectedAddress = ui.item;
-                this._setField(this.options.fields.street1, selectedAddress.street1);
-                this._setField(this.options.fields.street2, selectedAddress.street2);
-                this._setField(this.options.fields.city, selectedAddress.city);
-                this._setField(this.options.fields.state, selectedAddress.state);
-                this._setField(this.options.fields.zip, selectedAddress.zip);
-
-                this._summarize(selectedAddress);
-
-                return false;
-            },
-
-            _setField: function(ele, val){
-                if (ele) {
-                    if (val) {
-                        $(ele).val(val);
-                    } else {
-                        $(ele).val('');
-                    }
-                }
-            },
-
-            _resetClick: function () {
-                this._resetAllFields();
-                this._toggleAllFieldsVisibility(true);
-                this._unsummarize();
-                $(this.options.street1Field).focus();
-            },
-
-            _summarize: function (selectedAddress) {
-                $(this.summarySpan).html(this._combineAddress(selectedAddress, true));
-                $(this.summarySpan).show();
-                $(this.resetLink).show();
-                this._toggleAllFieldsVisibility(false);
-            },
-
-            _unsummarize: function () {
-                $(this.summarySpan).html('');
-                $(this.summarySpan).hide();
-                $(this.resetLink).hide();
-            },
-
-            _resetAllFields: function () {
-                for (var i in this.options.fields){
-                    this._setField(this.options.fields[i], '');
-                }
-            },
-
-            _toggleAllFieldsVisibility: function (visible) {
-                for (var i in this.options.fields) {
-                    if (visible) {
-                        $(this.options.fields[i]).show();
-                    } else {
-                        $(this.options.fields[i]).hide();
-                    }
-                }
-            },
-
-            _handleResponse: function (event, ui) {
-                if(ui.content.length == 0){
-                    
-                }
-            }
-        });
+    <script type="text/javascript">
+        var addresses = [
+        {
+            id: 1,
+            street1: '2106 SE Main St.',
+            street2: 'Apt. 1',
+            city: 'Portland',
+            state: 'OR',
+            zip: '97214',
+            category: 'Shipping'
+        },
+        {
+            id: 3,
+            street1: '116 Hidden Valley Ln.',
+            city: 'Bluemont',
+            state: 'VA',
+            zip: '20135',
+            category: 'Shipping'
+        },
+        {
+            id: 2,
+            street1: '2407 SE 10th Ave.',
+            street2: 'C/O Fumi',
+            city: 'Portland',
+            state: 'OR',
+            zip: '97210',
+            category: 'Billing'
+        }];
     </script>
 
-<script type="text/javascript" id="pageScripts">
-    var addresses = [
-    {
-        id: 1,
-        street1: '2106 SE Main St.',
-        street2: 'Apt. 1',
-        city: 'Portland',
-        state: 'OR',
-        zip: '97214',
-        category: 'Shipping'
-    },
-    {
-        id: 3,
-        street1: '116 Hidden Valley Ln.',
-        city: 'Bluemont',
-        state: 'VA',
-        zip: '20135',
-        category: 'Shipping'
-    },
-    {
-        id: 2,
-        street1: '2407 SE 10th Ave.',
-        street2: 'C/O Fumi',
-        city: 'Portland',
-        state: 'OR',
-        zip: '97210',
-        category: 'Billing'
-    }];
-
-    $(document).ready(function () {
-        $('input[name=street1]').addressentry({
-            delay: 0,
-            source: addresses,
-            fields: {
-                street1: $('input[name=street1]'),
-                street2: $('input[name=street2]'),
-                city: $('input[name=city]'),
-                state: $('input[name=state]'),
-                zip: $('input[name=zip]'),
-            }
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('input[name=street1]').addressentry({
+                delay: 0,
+                source: addresses,
+                summarize: true,
+                fields: {
+                    street1: $('input[name=street1]'),
+                    street2: $('input[name=street2]'),
+                    city: $('input[name=city]'),
+                    state: $('input[name=state]'),
+                    zip: $('input[name=zip]'),
+                }
+            });
         });
-    });
-</script>
+    </script>
 </head>
 <body>
     <h1>Choose a shipping address:</h1>
 
     <form name="shippingAddress">
         <input type="text" name="street1" placeholder="Start typing address..." />
-        <input type="text" name="street2" />
+        <input type="text" name="street2" placeholder="Apt # / PO Box" />
         <br />
-        <input type="text" name="city" />
-        <input type="text" name="state" />
-        <input type="text" name="zip" />
+        <input type="text" name="city" placeholder="City" />
+        <input type="text" name="state" placeholder="State" maxlength="2" />
+        <input type="text" name="zip" placeholder="Zip" maxlength="5" />
     </form>
 </body>
 </html>
