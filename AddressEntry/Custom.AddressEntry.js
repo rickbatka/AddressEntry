@@ -13,7 +13,6 @@
 		this.summarySpan = $('<span class="address-entry-summary"></span>').hide();
 		this.resetLink = $('<span style="display:block; margin-top:25px;"><a class="addressentry-resetlink" href="#">Retry Address Suggestion</a></span>').hide();
 
-		this.container.append($('<br/>'));
 		this.container.append(this.summaryContainer);
 		this.summaryContainer.append(this.summarySpan);
 		this.summaryContainer.append(this.resetLink);
@@ -91,6 +90,7 @@
 
 	handleResetClick: function () {
 		this._resetAllFields();
+		this._toggleAllFieldsVisibility(false);
 		$(this.options.fields.street1).show();
 		if (this.options.summarize) {
 			this._unsummarize();
