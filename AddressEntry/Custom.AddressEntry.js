@@ -2,15 +2,21 @@
 	_create: function () {
 		this._super();
 
-		//set up UI
-		this.summarySpan = $('<span class="address-entry-summary"></span>').hide();
-		this.resetLink = $('<a href="#">Reset</a>').hide();
-		this.element.before(this.summarySpan);
-		this.summarySpan.after(this.resetLink);
-
 		if (this.options.summarize) {
 			this._toggleAllFieldsVisibility(false, true);
 		}
+
+		this.container = $(this.element).parent();
+		
+		//set up UI
+		this.summaryContainer = $('<div id="address-entry-summarycontainer"></div>');
+		this.summarySpan = $('<span class="address-entry-summary"></span>').hide();
+		this.resetLink = $('<span style="display:block; margin-top:25px;"><a class="addressentry-resetlink" href="#">Retry Address Suggestion</a></span>').hide();
+
+		this.container.append($('<br/>'));
+		this.container.append(this.summaryContainer);
+		this.summaryContainer.append(this.summarySpan);
+		this.summaryContainer.append(this.resetLink);
 
 		// wire up new event handlers
 		this._on(this.element, { addressentryselect: "handleSelect" });
@@ -76,10 +82,10 @@
 	},
 
 	handleResponse: function (event, ui) {
+		// if there are no search results for a query, show everything
 		if (ui.content.length == 0) {
 			this._toggleAllFieldsVisibility(true);
-		} else {
-			//this._toggleAllFieldsVisibility(false, true);
+			$(this.resetLink).show();
 		}
 	},
 

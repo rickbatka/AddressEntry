@@ -59,12 +59,29 @@
     <h1>Choose a shipping address:</h1>
 
     <form name="shippingAddress">
-        <input type="text" name="street1" placeholder="Start typing address..." />
-        <input type="text" name="street2" placeholder="Apt # / PO Box" />
-        <br />
-        <input type="text" name="city" placeholder="City" />
-        <input type="text" name="state" placeholder="State" maxlength="2" />
-        <input type="text" name="zip" placeholder="Zip" maxlength="5" />
+		<div id="shippingEntryDiv">
+			<input type="text" name="street1" placeholder="Start typing address..." />
+			<input type="text" name="street2" placeholder="Apt # / PO Box" />
+			<br />
+			<input type="text" name="city" placeholder="City" />
+			<input type="text" name="state" placeholder="State" maxlength="2" />
+			<input type="text" name="zip" placeholder="Zip" maxlength="5" />
+		</div>
     </form>
+
+	<style type="text/css">
+
+		.addressentry-resetlink{
+			border: 1px solid black;
+			padding: 10px;
+			color: black;
+			text-decoration: none;
+		}
+
+		.ui-autocomplete-category {
+			font-weight:bold;
+		}
+	</style>
+
 </body>
 </html>
