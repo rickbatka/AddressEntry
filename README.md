@@ -6,7 +6,7 @@ AddressEntry is an extension of the jQuery UI autocomplete widget aimed at helpi
 
 ##Usage
 
-(try it out right now on CodePen: http://codepen.io/anon/pen/gbYGKX)
+(try it out right now on CodePen: http://codepen.io/anon/pen/PwYvQJ)
 
 ```js
 $('input[name=street1]').addressentry({
