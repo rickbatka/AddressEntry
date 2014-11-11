@@ -6,24 +6,21 @@
 			this._toggleAllFieldsVisibility(false, true);
 		}
 
-		this.container = $(this.element).parent();
-		
 		//set up UI
-		this.summaryContainer = $('<div id="address-entry-summarycontainer"></div>');
-		this.summarySpan = $('<span class="address-entry-summary"></span>').hide();
-		this.resetLink = $('<span style="display:block; margin-top:25px;"><a class="addressentry-resetlink" href="#">Retry Address Suggestion</a></span>').hide();
+		this.summaryContainer = $('<div class="address-entry-summarycontainer" style="z-index: -1"></div>');
+		this.summaryInner = $('<div class="address-entry-summary" style="min-height:50px;"></div>').css('visibility', 'hidden');
+		this.resetLink = $('<span class="address-entry-link-container" style="display:block; margin-top:50px;"><a class="addressentry-resetlink" href="#" tabindex="-1">Retry Address Suggestion</a></span>').hide();
 
-		this.container.append(this.summaryContainer);
-		this.summaryContainer.append(this.summarySpan);
+		var addressEntryPosition = $(this.element).position();
+		this.summaryContainer.css({ 'position': 'absolute', 'top': addressEntryPosition.top + 'px', 'left': addressEntryPosition.left+'px' });
+		this.summaryContainer.append(this.summaryInner);
 		this.summaryContainer.append(this.resetLink);
+		$(this.element).after(this.summaryContainer);
 
 		// wire up new event handlers
 		this._on(this.element, { addressentryselect: "handleSelect" });
 		this._on(this.element, { addressentryresponse: "handleResponse" });
 		this._on(this.resetLink, { click: "handleResetClick" });
-
-		// make categories non-selectable options in menu
-		this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
 
 		// create search labels for source addresses
 		for (var i in this.options.source) {
@@ -46,93 +43,96 @@
 		return combined;
 	},
 
-	_renderMenu: function (ul, items) {
-		//add categories in menu
-		var that = this,
-		  currentCategory = "";
-		$.each(items, function (index, item) {
-			var li;
-			if (item.category != currentCategory) {
-				ul.append("<li class='ui-autocomplete-category'>" + item.category + "</li>");
-				currentCategory = item.category;
-			}
-			li = that._renderItemData(ul, item);
-			if (item.category) {
-				li.attr("aria-label", item.category + " : " + item.label);
-			}
-		});
-	},
-
 	handleSelect: function (event, ui) {
 		var selectedAddress = ui.item;
-		this._setField(this.options.fields.street1, selectedAddress.street1);
-		this._setField(this.options.fields.street2, selectedAddress.street2);
-		this._setField(this.options.fields.city, selectedAddress.city);
-		this._setField(this.options.fields.state, selectedAddress.state);
-		this._setField(this.options.fields.zip, selectedAddress.zip);
+		
+		// check if they clicked "New Address" entry in list
+		if (ui.item.newaction) {
+			this._enterNewAddress();
+		} else {
+			for (var i in selectedAddress) {
+				this._setField(i, selectedAddress[i]);
+			}
 
-		if (this.options.summarize) {
-			this._summarize(selectedAddress);
-			this._toggleAllFieldsVisibility(false);
+			if (this.options.summarize) {
+				this._summarize(selectedAddress);
+				this._toggleAllFieldsVisibility(false);
+			}
 		}
 
 		//prevent the parent autocomplete select event from firing - it'll try to munge the entire address into the autocomplete field
 		return false;
 	},
 
+	_setField: function (label, val) {
+		var selector = 'input.'+this.options.formFieldClass+'[name='+label+']';
+		//console.log('sel: ' + selector);
+
+		if ($(selector)) {
+			if (val) {
+				$(selector).val(val);
+			} else {
+				$(selector).val('');
+			}
+		}
+	},
+
 	handleResponse: function (event, ui) {
 		// if there are no search results for a query, show everything
 		if (ui.content.length == 0) {
-			this._toggleAllFieldsVisibility(true);
-			$(this.resetLink).show();
+			this._enterNewAddress();
+		} else {
+			ui.content.push({ 'label': 'New Address', 'value': '', 'newaction': true });
 		}
+	},
+
+	_enterNewAddress: function () {
+		this._toggleAllFieldsVisibility(true);
+		$(this.resetLink).show();
 	},
 
 	handleResetClick: function () {
 		this._resetAllFields();
 		this._toggleAllFieldsVisibility(false);
-		$(this.options.fields.street1).show();
+		$('input.' + this.options.formFieldClass + '[name=street1]').show();
 		if (this.options.summarize) {
 			this._unsummarize();
 		}
-		$(this.options.fields.street1).focus();
+		$('input.' + this.options.formFieldClass + '[name=street1]').focus();
 	},
 
-	_setField: function (ele, val) {
-		if (ele) {
-			if (val) {
-				$(ele).val(val);
-			} else {
-				$(ele).val('');
-			}
-		}
-	},
+
 
 	_summarize: function (selectedAddress) {
-		$(this.summarySpan).html(this._combineAddress(selectedAddress, true));
-		$(this.summarySpan).show();
+		$(this.summaryInner).html(this._combineAddress(selectedAddress, true));
+		$(this.summaryInner).css('visibility', 'visible');
+		$(this.summaryContainer).css('z-index', '1');
 		$(this.resetLink).show();
 	},
 
 	_unsummarize: function () {
-		$(this.summarySpan).html('');
-		$(this.summarySpan).hide();
+		$(this.summaryInner).html('');
+		$(this.summaryInner).css('visibility', 'hidden');
+		$(this.summaryContainer).css('z-index', '-1');
 		$(this.resetLink).hide();
 	},
 
 	_resetAllFields: function () {
-		for (var i in this.options.fields) {
-			this._setField(this.options.fields[i], '');
+		var allFields = $('input.' + this.options.formFieldClass);
+
+		for (var i = 0; i < allFields.length; i ++) {
+			this._setField($(allFields[i]).attr('name'), '');
 		}
 	},
 
 	_toggleAllFieldsVisibility: function (visible, ignoreStreet1) {
-		for (var i in this.options.fields) {
-			if (!ignoreStreet1 || i != 'street1') {
+		var allFields = $('input.' + this.options.formFieldClass);
+		for (var i = 0; i < allFields.length; i++) {
+			if (!ignoreStreet1 || $(allFields[i]).attr('name') != 'street1') {
 				if (visible) {
-					$(this.options.fields[i]).show();
+					$(allFields[i]).show();
 				} else {
-					$(this.options.fields[i]).hide();
+					$(allFields[i]).hide();
 				}
 			}
 		}

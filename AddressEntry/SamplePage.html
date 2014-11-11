@@ -11,30 +11,30 @@
     <script type="text/javascript">
         var addresses = [
         {
-            id: 1,
+        	addressId: 1,
+			addressTypeId: 1,
             street1: '801 SW 10th Ave',
             city: 'Portland',
             state: 'OR',
             zip: '97205',
-            category: 'Shipping'
         },
         {
-            id: 3,
+        	addressId: 3,
+        	addressTypeId: 2,
             street1: '707 Portway Av.',
             street2: 'Suite 101',
             city: 'Hood River',
             state: 'OR',
             zip: '97013',
-            category: 'Shipping'
         },
         {
-            id: 2,
+        	addressId: 2,
+        	addressTypeId: 2,
             street1: '2407 SE 10th Ave.',
             street2: 'C/O Fumi',
             city: 'Portland',
             state: 'OR',
             zip: '97210',
-            category: 'Billing'
         }];
     </script>
 
@@ -43,14 +43,8 @@
             $('input[name=street1]').addressentry({
                 delay: 0,
                 source: addresses,
+                formFieldClass: 'address-entry',
                 summarize: true,
-                fields: {
-                    street1: $('input[name=street1]'),
-                    street2: $('input[name=street2]'),
-                    city: $('input[name=city]'),
-                    state: $('input[name=state]'),
-                    zip: $('input[name=zip]'),
-                }
             });
         });
     </script>
@@ -59,14 +53,15 @@
     <h1>Choose a shipping address:</h1>
 
     <form name="shippingAddress">
-		<div id="shippingEntryDiv">
-			<input type="text" name="street1" placeholder="Start typing address..." />
-			<input type="text" name="street2" placeholder="Apt # / PO Box" />
-			<br />
-			<input type="text" name="city" placeholder="City" />
-			<input type="text" name="state" placeholder="State" maxlength="2" />
-			<input type="text" name="zip" placeholder="Zip" maxlength="5" />
-		</div>
+		<input type="text" name="street1" class="address-entry" placeholder="Start typing address..." />
+		<input type="text" name="street2" class="address-entry" placeholder="Apt # / PO Box" />
+		<br />
+		<input type="text" name="city" class="address-entry" placeholder="City" />
+		<input type="text" name="state" class="address-entry" placeholder="State" maxlength="2" />
+		<input type="text" name="zip" class="address-entry" placeholder="Zip" maxlength="5" />
+
+		<input type="hidden" name="addressId" class="address-entry" />
+		<input type="hidden" name="addressTypeId" class="address-entry" />
     </form>
 
 	<style type="text/css">
