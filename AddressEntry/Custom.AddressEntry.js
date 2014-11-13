@@ -48,6 +48,7 @@
 		
 		// check if they clicked "New Address" entry in list
 		if (ui.item.newaction) {
+			this.handleResetClick();
 			this._enterNewAddress();
 		} else {
 			for (var i in selectedAddress) {
@@ -93,15 +94,15 @@
 
 	handleResetClick: function () {
 		this._resetAllFields();
-		this._toggleAllFieldsVisibility(false);
-		$('input.' + this.options.formFieldClass + '[name=street1]').show();
+		
 		if (this.options.summarize) {
+			this._toggleAllFieldsVisibility(false);
 			this._unsummarize();
 		}
+
+		$('input.' + this.options.formFieldClass + '[name=street1]').show();
 		$('input.' + this.options.formFieldClass + '[name=street1]').focus();
 	},
-
-
 
 	_summarize: function (selectedAddress) {
 		$(this.summaryInner).html(this._combineAddress(selectedAddress, true));
