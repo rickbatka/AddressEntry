@@ -3,13 +3,13 @@
 		this._super();
 
 		if (this.options.summarize) {
-			this._toggleAllFieldsVisibility(false, true);
+			this._toggleAllFieldsVisibility(false);
 		}
 
 		//set up UI
 		this.summaryContainer = $('<div class="address-entry-summarycontainer" style="z-index: -1"></div>');
 		this.summaryInner = $('<div class="address-entry-summary" style="min-height:50px;"></div>').css('visibility', 'hidden');
-		this.resetLink = $('<span class="address-entry-link-container" style="display:block; margin-top:50px;"><a class="addressentry-resetlink" href="#" tabindex="-1">Retry Address Suggestion</a></span>').hide();
+		this.resetLink = $('<span class="address-entry-link-container" style="display:block; margin-top:50px;"><a class="addressentry-resetlink" href="#" tabindex="-1">Retry Address Suggestion</a></span>').css('visibility', 'hidden');;
 
 		var addressEntryPosition = $(this.element).position();
 		this.summaryContainer.css({ 'position': 'absolute', 'top': addressEntryPosition.top + 'px', 'left': addressEntryPosition.left+'px' });
@@ -26,6 +26,8 @@
 		for (var i in this.options.source) {
 			this.options.source[i].label = this._combineAddress(this.options.source[i]);
 		}
+
+		$(this.element).css('visibility', 'visible');
 	},
 	_combineAddress: function (address, withBreaks) {
 		var combined = address.street1;
@@ -89,7 +91,7 @@
 
 	_enterNewAddress: function () {
 		this._toggleAllFieldsVisibility(true);
-		$(this.resetLink).show();
+		$(this.resetLink).css('visibility', 'visible');;
 	},
 
 	handleResetClick: function () {
@@ -100,7 +102,7 @@
 			this._unsummarize();
 		}
 
-		$('input.' + this.options.formFieldClass + '[name=street1]').show();
+		$('input.' + this.options.formFieldClass + '[name=street1]').css('visibility', 'visible');
 		$('input.' + this.options.formFieldClass + '[name=street1]').focus();
 	},
 
@@ -108,14 +110,14 @@
 		$(this.summaryInner).html(this._combineAddress(selectedAddress, true));
 		$(this.summaryInner).css('visibility', 'visible');
 		$(this.summaryContainer).css('z-index', '1');
-		$(this.resetLink).show();
+		$(this.resetLink).css('visibility', 'visible');;
 	},
 
 	_unsummarize: function () {
 		$(this.summaryInner).html('');
 		$(this.summaryInner).css('visibility', 'hidden');
 		$(this.summaryContainer).css('z-index', '-1');
-		$(this.resetLink).hide();
+		$(this.resetLink).css('visibility', 'hidden');;
 	},
 
 	_resetAllFields: function () {
@@ -126,15 +128,13 @@
 		}
 	},
 
-	_toggleAllFieldsVisibility: function (visible, ignoreStreet1) {
+	_toggleAllFieldsVisibility: function (visible) {
 		var allFields = $('input.' + this.options.formFieldClass);
 		for (var i = 0; i < allFields.length; i++) {
-			if (!ignoreStreet1 || $(allFields[i]).attr('name') != 'street1') {
-				if (visible) {
-					$(allFields[i]).show();
-				} else {
-					$(allFields[i]).hide();
-				}
+			if (visible) {
+				$(allFields[i]).css('visibility', 'visible');
+			} else {
+				$(allFields[i]).css('visibility', 'hidden');
 			}
 		}
 	},
