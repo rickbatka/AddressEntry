@@ -41,7 +41,8 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('input[name=street1]').addressentry({
-                delay: 0,
+            	delay: 0,
+				autoFocus: true,
                 source: addresses,
                 formFieldClass: 'address-entry',
                 summarize: true,

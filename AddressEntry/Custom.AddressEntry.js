@@ -8,8 +8,8 @@
 
 		//set up UI
 		this.summaryContainer = $('<div class="address-entry-summarycontainer" style="z-index: -1"></div>');
-		this.summaryInner = $('<div class="address-entry-summary" style="min-height:50px;"></div>').css('visibility', 'hidden');
-		this.resetLink = $('<span class="address-entry-link-container" style="display:block; margin-top:50px;"><a class="addressentry-resetlink" href="#" tabindex="-1">Retry Address Suggestion</a></span>').css('visibility', 'hidden');;
+		this.summaryInner = $('<div class="address-entry-summary" style="min-height:100px;"></div>').css('visibility', 'hidden');
+		this.resetLink = $('<span class="address-entry-link-container" style="display:block;"><a class="addressentry-resetlink" href="#" tabindex="-1">Retry Address Suggestion</a></span>').css('visibility', 'hidden');;
 
 		var addressEntryPosition = $(this.element).position();
 		this.summaryContainer.css({ 'position': 'absolute', 'top': addressEntryPosition.top + 'px', 'left': addressEntryPosition.left+'px' });
@@ -52,6 +52,7 @@
 		if (ui.item.newaction) {
 			this.handleResetClick();
 			this._enterNewAddress();
+
 		} else {
 			for (var i in selectedAddress) {
 				this._setField(i, selectedAddress[i]);
@@ -69,7 +70,6 @@
 
 	_setField: function (label, val) {
 		var selector = 'input.'+this.options.formFieldClass+'[name='+label+']';
-		//console.log('sel: ' + selector);
 
 		if ($(selector)) {
 			if (val) {
@@ -138,6 +138,5 @@
 			}
 		}
 	},
-
 
 });
