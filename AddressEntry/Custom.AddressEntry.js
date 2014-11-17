@@ -52,7 +52,7 @@
 		if (ui.item.newaction) {
 			this.handleResetClick();
 			this._enterNewAddress();
-
+			$('input.' + this.options.formFieldClass + '[name=street1]').val(this.term);
 		} else {
 			for (var i in selectedAddress) {
 				this._setField(i, selectedAddress[i]);
@@ -85,7 +85,7 @@
 		if (ui.content.length == 0) {
 			this._enterNewAddress();
 		} else {
-			ui.content.push({ 'label': 'New Address', 'value': '', 'newaction': true });
+			ui.content.push({ 'label': 'New Address', 'value': this.term, 'newaction': true });
 		}
 	},
 
