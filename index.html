@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Addressentry by rickbatka</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Addressentry</h1>
+        <p>jQuery UI widget for collecting addresses from existing customers.</p>
+
+        <p class="view"><a href="https://github.com/rickbatka/AddressEntry">View the Project on GitHub <small>rickbatka/AddressEntry</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/rickbatka/AddressEntry/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/rickbatka/AddressEntry/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/rickbatka/AddressEntry">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="addressentry" class="anchor" href="#addressentry" aria-hidden="true"><span class="octicon octicon-link"></span></a>AddressEntry</h1>
+
+<p>AddressEntry is an extension of the jQuery UI autocomplete widget aimed at helping in collecting addresses from existing customers, for example at the "Choose shipping address" stage of checkout. It will help your existing customers choose from a list of addresses on file and quickly get out of the way when the user begins typing an address that it doesn't recognize, only exposing the "new address" UI when needed.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>(try it out right now on CodePen: <a href="http://codepen.io/anon/pen/PwYvQJ">http://codepen.io/anon/pen/PwYvQJ</a>)</p>
+
+<div class="highlight highlight-js"><pre>$(<span class="pl-s1"><span class="pl-pds">'</span>input[name=street1]<span class="pl-pds">'</span></span>).addressentry({
+    delay<span class="pl-k">:</span> <span class="pl-c1">0</span>,
+    source<span class="pl-k">:</span> addresses,
+    summarize<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+    formFieldClass<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>address-entry<span class="pl-pds">'</span></span>,
+});</pre></div>
+
+<p>Initializing addressentry is identical to initializing jQuery UI's autocomplete widget with a few extra parameters - in fact, addressentry is an extension of autocomplete and supports all of autocomplete's options (plus a few more). </p>
+
+<p><strong>The main difference between addressentry and vanilla autocomplete</strong> is the role of the <em>source</em> option:</p>
+
+<blockquote>
+<p>In Autocomplete, the <em>source</em> option is an array of objects that must contain two fields, <em>label</em> and <em>value</em>.
+However, in Addressentry, <em>source</em> is an array of addresses. Addresses must contains a field called <em>streeet1</em> and may optionally also contain any other fields you can think of (street2, city, state, zip, addressId, category... any metadata you may need). Don't worry about <em>label</em> - addressentry will summarize your addresses for your autocompleted search results.</p>
+</blockquote>
+
+<p>In addition to all the options provided by jQuery UI autocomplete (<a href="http://api.jqueryui.com/autocomplete/">http://api.jqueryui.com/autocomplete/</a>), the following options are used:</p>
+
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>source</td>
+<td>an array of objects containing common fields displayed in mailing addresses (see examples).</td>
+</tr>
+<tr>
+<td>formFieldClass</td>
+<td>important. this is the class that you need to apply to all your fields that you want populated. if you have a hidden field called addressId, and your addresses in the <em>source</em> field contain addressId, then apply this class to the field and it will get its value populated when the user selectes an address. same for other fields you might want to collect, like street1, city, zip, etc.</td>
+</tr>
+<tr>
+<td>summarize</td>
+<td>bool - when true, hides all input boxes except the address1(search) box when they are not needed. Defaults to true.</td>
+</tr>
+</tbody>
+</table>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/rickbatka">rickbatka</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
